@@ -4,6 +4,7 @@
 const http = require('http');
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const config = require('./config');
 const { createLogger } = require('./utils/logger');
@@ -51,8 +52,13 @@ async function main() {
   const router = createRouter(botEngine, stateManager, config);
   app.use('/api', router);
 
-  // Catch-all for unknown routes
-  app.use((req, res) => res.status(404).json({ ok: false, error: 'Not found' }));
+  // Serve static frontend files
+  app.use(express.static(path.join(__dirname, '../public')));
+
+  // SPA fallback: serve index.html for all non-API routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  });
 
   // Global error handler
   app.use((err, req, res, next) => {
