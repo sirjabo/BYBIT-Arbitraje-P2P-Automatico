@@ -164,8 +164,6 @@ class BybitClient {
       side: String(side),
       page: String(page),
       size: String(size),
-      authMaker: false,
-      canTrade: false,
     };
     const data = await this._postP2P('/v5/p2p/item/online', body);
     return data.result?.items || [];
